@@ -1,0 +1,31 @@
+//Neo4j testing queries
+match(asteroid:Asteroid)-[:IS]->(neo:NEO) return neo.is_neo as neo, count(asteroid) as count
+
+match(asteroid:Asteroid)-[:HAS]->(h:H) return h.mag as h, count(asteroid) as count
+
+match(asteroid:Asteroid)-[:ISOFCLASS]->(diameter:Diameter) return diameter.diameter_class as diameter, count(asteroid) as count
+
+match(asteroid:Asteroid)-[:HASORBITSHAPE]->(eccentricity:Eccentricity) return eccentricity.e as eccentricity, count(asteroid) as count
+
+match(asteroid:Asteroid)-[:HASANGLE]->(inclination:Inclination) return inclination.i as inclination, count(asteroid) as count
+
+match(asteroid:Asteroid)-[:BELONGSTO]->(class:Class) return class.class_name as class, count(asteroid) as count
+
+match(asteroid:Asteroid)-[:HASDISTANCE]->(moid:MOID) return moid.dist as moid_cat, count(asteroid) as count
+
+match(asteroid:Asteroid)-[:ISDANGEROUS]->(pha:PHA) return pha.hazard as pha, count(asteroid) as count
+
+match(asteroid:Asteroid)-[:HASANGULARSPEED]->(n:N) return n.speed as n, count(asteroid) as count
+
+match(asteroid:Asteroid)-[:REVOLVESON]->(orbitid:ORBITID) return orbitid.orbit as orbit_id, count(asteroid) as count
+
+match(asteroid:Asteroid)-[:ISOFCLASS]->(diameter:Diameter) return diameter.diameter_class as diameter, count(asteroid) as count
+
+
+match(asteroid:Asteroid)-[:ISOFCLASS]->(diameter:Diameter) where diameter.diameter_class = 'large_size' return asteroid LIMIT 50
+
+match(asteroid:Asteroid)-[:HASORBITSHAPE]->(eccentricity:Eccentricity) where eccentricity.e = 'hyperbola' return asteroid
+
+match(asteroid:Asteroid)-[:HASANGLE]->(inclination:Inclination) where inclination.i = 'obtuse' return asteroid
+
+match(asteroid:Asteroid)-[:IS]->(neo:NEO) where neo.is_neo = 'Unknown' return asteroid

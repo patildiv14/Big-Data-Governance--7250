@@ -1,0 +1,166 @@
+CREATE CONSTRAINT ON (asteroid:Asteroid) ASSERT asteroid.id IS UNIQUE;
+CREATE CONSTRAINT ON (neo:NEO) ASSERT neo.is_neo IS UNIQUE;
+CREATE CONSTRAINT ON (h:H) ASSERT h.mag IS UNIQUE;
+CREATE CONSTRAINT ON (diameter:Diameter) ASSERT diameter.diameter_class IS UNIQUE;
+CREATE CONSTRAINT ON (eccentricity:Eccentricity) ASSERT eccentricity.e IS UNIQUE;
+CREATE CONSTRAINT ON (inclination:Inclination) ASSERT inclination.i IS UNIQUE;
+CREATE CONSTRAINT ON (class:Class) ASSERT class.class_name IS UNIQUE;
+CREATE CONSTRAINT ON (moid:MOID) ASSERT moid.dist IS UNIQUE;
+CREATE CONSTRAINT ON (pha:PHA) ASSERT pha.hazard IS UNIQUE;
+CREATE CONSTRAINT ON (n:N) ASSERT n.speed IS UNIQUE;
+CREATE CONSTRAINT ON (orbitid:ORBITID) ASSERT orbitid.orbit IS UNIQUE;
+
+
+
+//Create Nodes
+//Create Asteroid node
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MERGE
+(asteroid:Asteroid {id:row.asteroidId})
+ON CREATE SET
+asteroid.full_name = row.full_name;
+
+
+
+//Create NEO node
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MERGE
+(neo: NEO {is_neo:row.neo});
+
+//Create H node
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MERGE
+(h: H {mag:row.H_cat});
+
+
+//Create Diameter node
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MERGE
+(diameter: Diameter {diameter_class:row.diameter_cat});
+
+
+//Create Eccentricity node -- not working
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MERGE
+(eccentricity: Eccentricity {e:row.eccentricity_cat});
+
+//Create Inclination node
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MERGE
+(inclination: Inclination {i:row.inclination_cat});
+
+//Create Class node
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MERGE
+(class: Class {class_name:row.class});
+
+
+//Create MOID node
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MERGE
+(moid: MOID {dist:row.moid_cat});
+
+//Create PHA node
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MERGE
+(pha: PHA {hazard:row.pha});
+
+//Create N node  -- not working
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MERGE
+(n: N {speed:row.n_cat});
+
+
+//Create ORBIT_ID node
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MERGE
+(orbitid: ORBITID {orbit:row.orbit_id});
+
+
+
+
+//RELATIONSHIPS
+//Relationship between Asteroid and NEO
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MATCH (asteroid:Asteroid {id:row.asteroidId})
+MATCH (neo:NEO {is_neo:row.neo})
+MERGE (asteroid)-[:IS]->(neo);
+
+//Relationship between Asteroid and H
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MATCH (asteroid:Asteroid {id:row.asteroidId})
+MATCH (h:H {mag:row.H_cat})
+MERGE (asteroid)-[:HAS]->(h);
+
+
+//Relationship between Asteroid and Diameter
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MATCH (asteroid:Asteroid {id:row.asteroidId})
+MATCH (diameter:Diameter {diameter_class:row.diameter_cat})
+MERGE (asteroid)-[:ISOFCLASS]->(diameter);
+
+
+//Relationship between Asteroid and Eccentricity
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MATCH (asteroid:Asteroid {id:row.asteroidId})
+MATCH (eccentricity:Eccentricity {e:row.eccentricity_cat})
+MERGE (asteroid)-[:HASORBITSHAPE]->(eccentricity);
+
+//Relationship between Asteroid and Inclination
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MATCH (asteroid:Asteroid {id:row.asteroidId})
+MATCH (inclination:Inclination {i:row.inclination_cat})
+MERGE (asteroid)-[:HASANGLE]->(inclination);
+
+//Relationship between Asteroid and Class
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MATCH (asteroid:Asteroid {id:row.asteroidId})
+MATCH (class:Class {class_name:row.class})
+MERGE (asteroid)-[:BELONGSTO]->(class);
+
+//Relationship between Asteroid and MOID
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MATCH (asteroid:Asteroid {id:row.asteroidId})
+MATCH (moid:MOID {dist:row.moid_cat})
+MERGE (asteroid)-[:HASDISTANCE]->(moid);
+
+
+//Relationship between Asteroid and PHA
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MATCH (asteroid:Asteroid {id:row.asteroidId})
+MATCH (pha:PHA {hazard:row.pha})
+MERGE (asteroid)-[:ISDANGEROUS]->(pha);
+
+
+//Relationship between Asteroid and N
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MATCH (asteroid:Asteroid {id:row.asteroidId})
+MATCH (n:N {speed:row.n_cat})
+MERGE (asteroid)-[:HASANGULARSPEED]->(n);
+
+//Relationship between Asteroid and ORBITID
+:auto USING PERIODIC COMMIT 5000
+LOAD CSV With HEADERS FROM 'file:///Clean_Asteroid_Data.csv' AS row
+MATCH (asteroid:Asteroid {id:row.asteroidId})
+MATCH (orbitid:ORBITID {orbit:row.orbit_id})
+MERGE (asteroid)-[:REVOLVESON]->(orbitid);
